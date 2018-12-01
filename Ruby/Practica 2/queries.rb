@@ -1,29 +1,33 @@
-def guardar
-a = 001.new
-z = 001.new
-b = 002.new
-c = 002.new
-d = 002.new
-e = 003.new
-a.nombre_usuario = "Sujeto2"
-z.nombre_usuario = "Sujeto1"
-b.nombre_sitio = "Facebook"
-b.nombre_usuario = a.nombre_usuario
-c.nombre_sitio = "YouTube"
-c.nombre_usuario = z.nombre_usuario
-d.nombre_sitio = "Netflix"
-d.nombre_usuario = a.nombre_usuario
-e.contraseña = "passwd"
+require 'bcrypt'
+require 'sequel'
+require_relative 'services'
+
+Services.load_config!
+db = Services.database
+
+def insertar_usuario(nombre_usuario)
+  db[:usuarios].insert(nombre_usuario: nombre_usuario)
 end
 
-def consulta_1
-001.find(nombre_sitio = "Facebook")
+def insertar_sitio(nombre_sitio)
+db[:sitios].insert(nombre_sitio: nombre_sitio)
 end
 
-def consulta_2
-002.find(nombre_usuario = "Sujeto2")
+def insertar_contraseña(pwd, usuario, sitio)
+aux = BCrypt::Password.create(pwd)
+db[:contraseñas].insert(contraseña: aux, nombre_usuario: usuario, nombre_sitio: sitio )
 end
 
-def consulta_3
-   sort(001.all, 002.all)
+def query_1(sitio_x)
+db[:contraseñas.nombre_usuario].where{nombre_sitio = sitio_x}
+#select nombre_usuario from contraseñas where nombre_sitio = sitio_x;
+end
+
+def query_2(usuario_x)
+db[:contraseñas.nombre_sitio].where{nombre_usuario = usuario_x}
+#select nombre_sitio from contraseñas where nombre_usuario = usuario_x
+end
+
+def query_3()
+db.order[:contraseñas.nombre_usuario & :contraseña.nombre_sitio]
 end
